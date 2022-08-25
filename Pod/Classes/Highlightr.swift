@@ -24,6 +24,8 @@ open class Highlightr
             themeChanged?(theme)
         }
     }
+  
+    public static let shared = Highlightr()
     
     /// This block will be called every time the theme changes.
     open var themeChanged : ((Theme) -> Void)?
@@ -76,7 +78,7 @@ open class Highlightr
         }
         self.hljs = hljs
         
-        guard setTheme(to: "pojoaque") else
+        guard setTheme(to: "github") else
         {
             return nil
         }

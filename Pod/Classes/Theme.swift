@@ -37,6 +37,14 @@ open class Theme {
     open var boldCodeFont : RPFont!
     /// Italic font to be used by this theme
     open var italicCodeFont : RPFont!
+  
+    open var baseAttributes: [NSAttributedString.Key: Any]? {
+      didSet {
+        if let font = baseAttributes?[.font] as? UIFont {
+          setCodeFont(font)
+        }
+      }
+    }
     
     private var themeDict : RPThemeDict!
     private var strippedTheme : RPThemeStringDict!

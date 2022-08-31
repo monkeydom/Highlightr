@@ -78,7 +78,7 @@ open class Highlightr
         }
         self.hljs = hljs
         
-        guard setTheme(to: "github") else
+        guard setTheme(to: "medium") else
         {
             return nil
         }
@@ -95,7 +95,7 @@ open class Highlightr
     @discardableResult
     open func setTheme(to name: String) -> Bool
     {
-        guard let defTheme = bundle.path(forResource: name+".min", ofType: "css") else
+        guard let defTheme = bundle.path(forResource: name, ofType: "css") else
         {
             return false
         }

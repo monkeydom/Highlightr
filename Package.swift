@@ -28,8 +28,7 @@ let package = Package(
             ],
             resources: [
                 .copy("Assets/Highlighter/highlight.min.js"),
-                .copy("Assets/styles/github-gist.min.css"),
-                .copy("Assets/styles/github.min.css"),
+                .copy("Assets/styles/medium.css"),
             ]
         ),
     ]

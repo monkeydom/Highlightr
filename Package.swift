@@ -6,7 +6,7 @@ let package = Package(
     name: "Highlightr",
     platforms: [
         .macOS(.v10_11),
-        .iOS(.v8),
+        .iOS(.v14),
     ],
     products: [
         .library(
@@ -28,7 +28,8 @@ let package = Package(
             ],
             resources: [
                 .copy("Assets/Highlighter/highlight.min.js"),
-                .copy("Assets/styles/medium.css"),
+                .copy("Assets/styles/medium-light.css"),
+                .copy("Assets/styles/medium-dark.css"),
             ]
         ),
     ]

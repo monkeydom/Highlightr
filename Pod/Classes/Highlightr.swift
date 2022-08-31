@@ -8,10 +8,12 @@
 
 import Foundation
 import JavaScriptCore
-
 #if os(OSX)
     import AppKit
+#elseif os(iOS)
+    import UIKit
 #endif
+
 
 /// Utility class for generating a highlighted NSAttributedString from a String.
 open class Highlightr
@@ -23,6 +25,19 @@ open class Highlightr
         {
             themeChanged?(theme)
         }
+    }
+  
+    open var interfaceStyle: UIUserInterfaceStyle = .light {
+      didSet {
+        switch interfaceStyle {
+        case .unspecified, .light:
+          setTheme(to: "medium-light")
+        case .dark:
+          setTheme(to: "medium-dark")
+        @unknown default:
+          setTheme(to: "medium-light")
+        }
+      }
     }
   
     public static let shared = Highlightr()
@@ -78,7 +93,7 @@ open class Highlightr
         }
         self.hljs = hljs
         
-        guard setTheme(to: "medium") else
+        guard setTheme(to: "medium-light") else
         {
             return nil
         }

@@ -71,38 +71,29 @@ open class Highlightr
    */
   public init?(highlightPath: String? = nil)
   {
-    let jsContext = JSContext()!
-    let window = JSValue(newObjectIn: jsContext)
-    jsContext.setObject(window, forKeyedSubscript: "window" as NSString)
-    
+    guard let jsContext = JSContext() else {
+      return nil
+    }
 #if SWIFT_PACKAGE
     let bundle = Bundle.module
 #else
     let bundle = Bundle(for: Highlightr.self)
 #endif
     self.bundle = bundle
-    guard let hgPath = highlightPath ?? bundle.path(forResource: "highlight.min", ofType: "js") else
-    {
+    guard let hgPath = highlightPath ?? bundle.path(forResource: "highlight.min", ofType: "js") else {
       return nil
     }
     
-    let hgJs = try! String.init(contentsOfFile: hgPath)
-    let value = jsContext.evaluateScript(hgJs)
-    if value?.toBool() != true
-    {
+    do {
+      let hgJs = try String.init(contentsOfFile: hgPath)
+      jsContext.evaluateScript(hgJs)
+      self.hljs = jsContext.evaluateScript("hljs")
+      guard setTheme(to: "medium-light") else {
+        return nil
+      }
+    } catch {
       return nil
     }
-    guard let hljs = window?.objectForKeyedSubscript("hljs") else
-    {
-      return nil
-    }
-    self.hljs = hljs
-    
-    guard setTheme(to: "medium-light") else
-    {
-      return nil
-    }
-    
   }
   
   /**

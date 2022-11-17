@@ -40,6 +40,11 @@ open class Highlightr
     private let spanEnd = "/span>"
     private let htmlEscape = try! NSRegularExpression(pattern: "&#?[a-zA-Z0-9]+?;", options: .caseInsensitive)
     
+    public struct Result {
+        public let attributedString: NSAttributedString?
+        public let language: String?
+    }
+
     /**
      Default init method.
 
@@ -113,7 +118,7 @@ open class Highlightr
      
      - returns: NSAttributedString with the detected code highlighted.
      */
-    open func highlight(_ code: String, as languageName: String? = nil, fastRender: Bool = true) -> NSAttributedString?
+    open func highlight(_ code: String, as languageName: String? = nil, fastRender: Bool = true) -> Result?
     {
         let ret: JSValue
         if let languageName = languageName
@@ -126,6 +131,8 @@ open class Highlightr
         }
 
         let res = ret.objectForKeyedSubscript("value")
+        let language = ret.objectForKeyedSubscript("language").toString()
+
         guard var string = res!.toString() else
         {
             return nil
@@ -150,7 +157,7 @@ open class Highlightr
             }
         }
         
-        return returnString
+        return .init(attributedString: returnString, language: language)
     }
     
     /**

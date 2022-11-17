@@ -175,7 +175,7 @@ open class CodeAttributedString : NSTextStorage
         let line = string.substring(with: range)
         DispatchQueue.global().async
         {
-            let tmpStrg = self.highlightr.highlight(line, as: self.language!)
+            let tmpStrg = self.highlightr.highlight(line, as: self.language!)?.attributedString
             DispatchQueue.main.async(execute: {
                 //Checks to see if this highlighting is still valid.
                 if((range.location + range.length) > self.stringStorage.length)

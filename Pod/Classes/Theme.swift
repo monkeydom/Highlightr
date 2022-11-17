@@ -157,7 +157,8 @@ open class Theme {
                     }
                 }
             }
-            
+            attrs.updateValue(styleList, forKey: AttributedStringKey("HLTRStyles"))
+
             returnString = NSAttributedString(string: string, attributes:attrs )
         }
         else

@@ -28,6 +28,8 @@ private typealias RPThemeStringDict = [String:[String:String]]
 
 /// Theme parser, can be used to configure the theme parameters. 
 open class Theme {
+    public static let hljsStyleKey = AttributedStringKey("HLJSStyles")
+    
     internal let theme : String
     internal var lightTheme : String!
     
@@ -157,7 +159,7 @@ open class Theme {
                     }
                 }
             }
-            attrs.updateValue(styleList, forKey: AttributedStringKey("HLTRStyles"))
+            attrs.updateValue(styleList, forKey: Theme.hljsStyleKey)
 
             returnString = NSAttributedString(string: string, attributes:attrs )
         }

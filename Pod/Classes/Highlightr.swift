@@ -8,6 +8,7 @@
 
 import Foundation
 import JavaScriptCore
+import OSLog
 
 #if os(OSX)
     import AppKit
@@ -54,35 +55,28 @@ open class Highlightr
      */
     public init?(highlightPath: String? = nil)
     {
-        let jsContext = JSContext()!
-        let window = JSValue(newObjectIn: jsContext)
-        jsContext.setObject(window, forKeyedSubscript: "window" as NSString)
-
-        #if SWIFT_PACKAGE
+        guard let jsContext = JSContext() else {
+            return nil
+        }
+        
+#if SWIFT_PACKAGE
         let bundle = Bundle.module
-        #else
+#else
         let bundle = Bundle(for: Highlightr.self)
-        #endif
+#endif
         self.bundle = bundle
-        guard let hgPath = highlightPath ?? bundle.path(forResource: "highlight.min", ofType: "js") else
-        {
+        guard let hgPath = highlightPath ?? bundle.path(forResource: "highlight.min", ofType: "js") else {
             return nil
         }
         
-        let hgJs = try! String.init(contentsOfFile: hgPath)
-        let value = jsContext.evaluateScript(hgJs)
-        if value?.toBool() != true
-        {
-            return nil
-        }
-        guard let hljs = window?.objectForKeyedSubscript("hljs") else
-        {
-            return nil
-        }
-        self.hljs = hljs
-        
-        guard setTheme(to: "pojoaque") else
-        {
+        do {
+            let hgJs = try String.init(contentsOfFile: hgPath)
+            jsContext.evaluateScript(hgJs)
+            self.hljs = jsContext.evaluateScript("hljs")
+            guard setTheme(to: "pojoaque") else {
+                return nil
+            }
+        } catch {
             return nil
         }
         
@@ -98,7 +92,7 @@ open class Highlightr
     @discardableResult
     open func setTheme(to name: String) -> Bool
     {
-        guard let defTheme = bundle.path(forResource: name+".min", ofType: "css") else
+        guard let defTheme = bundle.path(forResource: name, ofType: "css") else
         {
             return false
         }
@@ -170,7 +164,7 @@ open class Highlightr
         let paths = bundle.paths(forResourcesOfType: "css", inDirectory: nil) as [NSString]
         var result = [String]()
         for path in paths {
-            result.append(path.lastPathComponent.replacingOccurrences(of: ".min.css", with: ""))
+            result.append(path.lastPathComponent.replacingOccurrences(of: ".css", with: ""))
         }
         
         return result

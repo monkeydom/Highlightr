@@ -23,7 +23,7 @@ import Foundation
 
 #endif
 
-private typealias RPThemeDict = [String: [AnyHashable: AnyObject]]
+public typealias RPThemeDict = [String: [AnyHashable: AnyObject]]
 private typealias RPThemeStringDict = [String:[String:String]]
 
 /// Theme parser, can be used to configure the theme parameters. 
@@ -40,7 +40,7 @@ open class Theme {
     /// Italic font to be used by this theme
     open var italicCodeFont : RPFont!
     
-    private var themeDict : RPThemeDict!
+    public var themeDict : RPThemeDict!
     private var strippedTheme : RPThemeStringDict!
     
     /// Default background color for the current theme.
@@ -83,6 +83,19 @@ open class Theme {
         }
     }
     
+    public convenience init?(name: String) {
+#if SWIFT_PACKAGE
+        let bundle = Bundle.module
+#else
+        let bundle = Bundle(for: Theme.self)
+#endif
+        guard let defTheme = bundle.path(forResource: name, ofType: "css") else
+        {
+            return nil
+        }
+        let themeString = try! String.init(contentsOfFile: defTheme)
+        self.init(themeString: themeString)
+    }
     /**
      Changes the theme font. This will try to automatically populate the codeFont, boldCodeFont and italicCodeFont properties based on the provided font.
      
